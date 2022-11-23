@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Cloudflare Web Analytics
  * Plugin URI:        https://www.bobmatyas.com
- * Description:       A plugin to easily add Cloudflare Web Analytics to WordPress
+ * Description:       Easily add Cloudflare Web Analytics to WordPress
  * Version:           1.0.0
  * Requires at least: 5.3
  * Requires PHP:      5.6
@@ -32,3 +32,98 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+
+
+add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
+
+
+function cf_web_analytics_add_settings_menu() {
+
+    add_options_page( 'Cloudflare Web Analytics Settings', 'Cloudflare Web Analytics', 'manage_options',
+        'cf_web_analytics', 'cf_web_analytics_option_page' );
+
+}
+
+function cf_web_analytics_option_page() {
+    ?>
+    <div class="wrap">
+        <h2>Cloudflare Web Analytics</h2>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'cf_web_analytics_options' );
+            do_settings_sections( 'cf_web_analytics' );
+            submit_button( 'Save Changes', 'primary' );
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+add_action('admin_init', 'cf_web_analytics_admin_init');
+
+
+function cf_web_analytics_admin_init(){
+
+    $args = array( 
+        'type'              => 'string',
+        'sanitize_callback' => 'cf_web_analytics_validate_options',
+        'default'           => NULL
+    );
+
+    register_setting( 'cf_web_analytics_options', 'cf_web_analytics_options', $args );
+
+    add_settings_section(
+        'cf_web_analytics_main',
+        'Cloudflare Web Analytics Settings',
+        'cf_web_analytics_section_text',
+        'cf_web_analytics'
+    );
+
+    add_settings_field( 
+        'cf_web_analytics_token',
+        'Token',
+        'cf_web_analytics_setting_token',
+        'cf_web_analytics',
+        'cf_web_analytics_main'
+    );
+}
+
+function cf_web_analytics_section_text() {
+    
+    echo '<p>Enter your token. Add instructions here.</p>';
+
+}
+
+function cf_web_analytics_setting_token() {
+
+    $options = get_option( 'cf_web_analytics_options' );
+    $token = $options['token'];
+
+    echo "<input id='token' name='cf_web_analytics_options[token]' pattern='[a-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "'/>";
+
+}
+
+function cf_web_analytics_validate_options( $input ) {
+
+    $valid = array();
+    $valid['token'] = preg_replace(
+        '/[^A-Za-z0-9]/',
+        '',
+        $input['token'] );
+
+    if( $valid['token'] !== $input['token'] ) {
+
+        add_settings_error(
+            'cf_web_analytics_text_string',
+            'cf_web_analytics_texterror',
+            'Incorrect value entered. Token should be only letters and numbers.',
+            'error'
+        );
+
+    }
+
+    $valid['token'] = sanitize_text_field( $input['token'] );
+
+    return $valid;
+
+}
