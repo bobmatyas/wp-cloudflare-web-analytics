@@ -36,7 +36,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
 
-
 function cf_web_analytics_add_settings_menu() {
 
     add_options_page( 'Cloudflare Web Analytics Settings', 'Cloudflare Web Analytics', 'manage_options',
@@ -52,7 +51,7 @@ function cf_web_analytics_option_page() {
             <?php
             settings_fields( 'cf_web_analytics_options' );
             do_settings_sections( 'cf_web_analytics' );
-            submit_button( 'Save Changes', 'primary' );
+            submit_button( 'Save', 'primary' );
             ?>
         </form>
     </div>
@@ -128,18 +127,32 @@ function cf_web_analytics_validate_options( $input ) {
 
 }
 
-function cf_web_analytics_load_scripts() {
+function cf_web_analytics_getToken() {
 
     $options = get_option( 'cf_web_analytics_options' );
     $token = $options['token'];
 
+    return $token;
+}
+
+function cf_web_analytics_load_scripts() {
+
+    $token = cf_web_analytics_getToken();
+
+    print 'token: '. $token .'';
+
+    if ( '' == $token || null == $token ) {
+        return;
+    }
+    
     wp_enqueue_script(
-		'cf-web-analytics',
-		'https://static.cloudflareinsights.com/beacon.min.js',
-		null,
-		null,
-		true
-	);
+        'cf-web-analytics',
+        'https://static.cloudflareinsights.com/beacon.min.js',
+        null,
+        null,
+        true
+    );
+    
 }
 
 add_action( 'wp_enqueue_scripts', 'cf_web_analytics_load_scripts' );
@@ -147,11 +160,10 @@ add_action( 'wp_enqueue_scripts', 'cf_web_analytics_load_scripts' );
 
 function cf_web_analytics_add_attributes( $tag, $handle, $src ) {
 
-    $options = get_option( 'cf_web_analytics_options' );
-    $token = $options['token'];
+    $token = cf_web_analytics_getToken();
 
     if ( 'cf-web-analytics' === $handle ) {
-        $tag = '<script defer src="' . esc_url( $src ) . '"  data-cf-beacon="{\'token\': \''. $token .'\'}"></script>';
+        $tag = "<script defer src='" . esc_url( $src ) . "'  data-cf-beacon='{\"token\": \"". $token ."\"}'></script>";
     }
 
     return $tag;
