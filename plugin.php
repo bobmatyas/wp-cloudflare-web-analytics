@@ -127,3 +127,34 @@ function cf_web_analytics_validate_options( $input ) {
     return $valid;
 
 }
+
+function cf_web_analytics_load_scripts() {
+
+    $options = get_option( 'cf_web_analytics_options' );
+    $token = $options['token'];
+
+    wp_enqueue_script(
+		'cf-web-analytics',
+		'https://static.cloudflareinsights.com/beacon.min.js',
+		null,
+		null,
+		true
+	);
+}
+
+add_action( 'wp_enqueue_scripts', 'cf_web_analytics_load_scripts' );
+
+
+function cf_web_analytics_add_attributes( $tag, $handle, $src ) {
+
+    $options = get_option( 'cf_web_analytics_options' );
+    $token = $options['token'];
+
+    if ( 'cf-web-analytics' === $handle ) {
+        $tag = '<script defer src="' . esc_url( $src ) . '"  data-cf-beacon="{\'token\': \''. $token .'\'}"></script>';
+    }
+
+    return $tag;
+}
+
+add_filter( 'script_loader_tag', 'cf_web_analytics_add_attributes', 10, 3 );
