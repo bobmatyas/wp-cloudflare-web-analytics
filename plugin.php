@@ -41,6 +41,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
 
+/**
+ * Add settings menu to WP Admin for plugin
+ *
+ * @return void
+ */
 function cf_web_analytics_add_settings_menu() {
 
 	add_options_page(
@@ -53,6 +58,11 @@ function cf_web_analytics_add_settings_menu() {
 
 }
 
+/**
+ * Configures options page
+ *
+ * @return void
+ */
 function cf_web_analytics_option_page() {
 	?>
 	<div class="wrap">
@@ -70,6 +80,11 @@ function cf_web_analytics_option_page() {
 
 add_action( 'admin_init', 'cf_web_analytics_admin_init' );
 
+/**
+ * Initializes admin page.
+ *
+ * @return void
+ */
 function cf_web_analytics_admin_init() {
 
 	$args = array(
@@ -96,12 +111,22 @@ function cf_web_analytics_admin_init() {
 	);
 }
 
+/**
+ * Prints instructions for entering Cloudflare token
+ *
+ * @return void
+ */
 function cf_web_analytics_section_text() {
 
 	echo '<p>Enter your token. Add instructions here.</p>';
 
 }
 
+/**
+ * Adds input box for Cloudflare token
+ *
+ * @return void
+ */
 function cf_web_analytics_setting_token() {
 
 	$token = cf_web_analytics_get_token();
@@ -110,6 +135,15 @@ function cf_web_analytics_setting_token() {
 
 }
 
+
+/**
+ * Check user-inputted token
+ *
+ * Checks token and makes sure it is valid.
+ *
+ * @param  string $input User inputed token
+ * @return boolean
+ */
 function cf_web_analytics_validate_options( $input ) {
 
 	$valid          = array();
@@ -136,6 +170,11 @@ function cf_web_analytics_validate_options( $input ) {
 
 }
 
+/**
+ * Gets token from database and returns it.
+ *
+ * @return string
+ */
 function cf_web_analytics_get_token() {
 
 	$options = get_option( 'cf_web_analytics_options' );
@@ -145,6 +184,13 @@ function cf_web_analytics_get_token() {
 
 }
 
+/**
+ * Loads Cloudflare Web Analytics script
+ *
+ * If the tokene exists and passes the check, load the Cloudflare JavaScript.
+ *
+ * @return void
+ */
 function cf_web_analytics_load_scripts() {
 
 	$token = cf_web_analytics_get_token();
@@ -168,6 +214,14 @@ function cf_web_analytics_load_scripts() {
 add_action( 'wp_enqueue_scripts', 'cf_web_analytics_load_scripts' );
 
 
+/**
+ * Modifies Cloudflare Web Analytics to return properly script tag
+ *
+ * @param  mixed $tag     Script tag
+ * @param  mixed $handle  Script handle
+ * @param  mixed $src     Cloudflare Web Analytics script URL
+ * @return string $tag
+ */
 function cf_web_analytics_add_attributes( $tag, $handle, $src ) {
 
 	$token = cf_web_analytics_get_token();
