@@ -97,7 +97,7 @@ function cf_web_analytics_admin_init() {
 
 	add_settings_section(
 		'cf_web_analytics_main',
-		'Cloudflare Web Analytics Settings',
+		'Enter your token Cloudflare Web Analytics token.',
 		'cf_web_analytics_section_text',
 		'cf_web_analytics'
 	);
@@ -112,14 +112,32 @@ function cf_web_analytics_admin_init() {
 }
 
 /**
- * Prints instructions for entering Cloudflare token
+ * Displays instructions for entering Cloudflare token
  *
  * @return void
  */
 function cf_web_analytics_section_text() {
 
-	echo '<p>Enter your token. Add instructions here.</p>';
+	echo '<details><summary style="color: #2271b1; text-decoration: underline; cursor: pointer;">No token? View instructions</a></summary>
 
+	<h3>How to Configure</h3>
+	
+	<ol>
+	<li><a href="https://dash.cloudflare.com/sign-up/web-analytics" target="blank">Sign-up for a Cloudflare account</a> or <a href="https://dash.cloudflare.com/login" target="blank">log in to your existing account.</a></li>
+	<li>Once logged in, navigate to <b>"Analytics > Web Analytics"</b></li>
+	<li>Add a new website or view the JS snippet for an existing site</li>
+	<li>In the snippet code, copy the <code>token</code> value (i.e. <code>"token": "<b><u>999d231dasda123kllklkdasc2</u></b>"</code>)
+	<details><summary>Example Snippet</summary>
+	<code>'. htmlentities( '<script defer src=\'https://static.cloudflareinsights.com/beacon.min.js\' data-cf-beacon=\'{"token": "999d231dasda123kllklkdasc2"}\'></script>' ) .' </code>
+	</details>
+	</li>
+	<li>The plugin uses the value <b>999d231dasda123kllklkdasc2</b> from the example above</li>
+	<li>Paste the token into the field.</li>
+	</ol>
+	
+	<h3>More about Cloudflare Web Analytics</h3>
+	
+	<p><a href="https://developers.cloudflare.com/analytics/web-analytics/" target="blank">Read the documentation on Cloudflare\'s site</a></p></details>';
 }
 
 /**
@@ -131,7 +149,7 @@ function cf_web_analytics_setting_token() {
 
 	$token = cf_web_analytics_get_token();
 
-	echo "<input id='token' name='cf_web_analytics_options[token]' pattern='[a-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "'/>";
+	echo "<input id='token' name='cf_web_analytics_options[token]' pattern='[a-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "' placeholder='ex: absd312dcdd312dasdas13' />";
 
 }
 
@@ -141,7 +159,7 @@ function cf_web_analytics_setting_token() {
  *
  * Checks token and makes sure it is valid.
  *
- * @param  string $input User inputed token
+ * @param  string $input User inputed token.
  * @return boolean
  */
 function cf_web_analytics_validate_options( $input ) {
@@ -187,7 +205,7 @@ function cf_web_analytics_get_token() {
 /**
  * Loads Cloudflare Web Analytics script
  *
- * If the tokene exists and passes the check, load the Cloudflare JavaScript.
+ * If the token exists and passes the check, load the Cloudflare JavaScript.
  *
  * @return void
  */
@@ -217,9 +235,9 @@ add_action( 'wp_enqueue_scripts', 'cf_web_analytics_load_scripts' );
 /**
  * Modifies Cloudflare Web Analytics to return properly script tag
  *
- * @param  mixed $tag     Script tag
- * @param  mixed $handle  Script handle
- * @param  mixed $src     Cloudflare Web Analytics script URL
+ * @param  mixed $tag     Script tag.
+ * @param  mixed $handle  Script handle.
+ * @param  mixed $src     Cloudflare Web Analytics script URL.
  * @return string $tag
  */
 function cf_web_analytics_add_attributes( $tag, $handle, $src ) {
