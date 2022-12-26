@@ -65,7 +65,7 @@ function cf_web_analytics_add_settings_menu() {
  */
 function cf_web_analytics_option_page() {
 	?>
-	<div class="wrap">
+	<div class="cfwa-container">
 		<h2>Cloudflare Web Analytics</h2>
 		<form action="options.php" method="post">
 			<?php
@@ -111,6 +111,18 @@ function cf_web_analytics_admin_init() {
 	);
 }
 
+add_action( 'admin_enqueue_scripts', 'cf_web_analytics_admin_styles' );
+
+/**
+ * Enqueues admin CSS
+ *
+ * @return void
+ */
+function cf_web_analytics_admin_styles() {
+	$admin_css = plugins_url( '/public/css/admin-styles.css', __FILE__ );
+	wp_enqueue_style( 'my-css', $admin_css, false, '1.0.0' );
+}
+
 /**
  * Displays instructions for entering Cloudflare token
  *
@@ -118,7 +130,7 @@ function cf_web_analytics_admin_init() {
  */
 function cf_web_analytics_section_text() {
 
-	echo '<details><summary style="color: #2271b1; text-decoration: underline; cursor: pointer;">No token? View instructions</a></summary>
+	echo '<details><summary>No token? View instructions</a></summary>
 
 	<h3>How to Configure</h3>
 	
@@ -127,17 +139,17 @@ function cf_web_analytics_section_text() {
 	<li>Once logged in, navigate to <b>"Analytics > Web Analytics"</b></li>
 	<li>Add a new website or view the JS snippet for an existing site</li>
 	<li>In the snippet code, copy the <code>token</code> value (i.e. <code>"token": "<b><u>999d231dasda123kllklkdasc2</u></b>"</code>)
-	<details><summary>Example Snippet</summary>
-	<code>'. htmlentities( '<script defer src=\'https://static.cloudflareinsights.com/beacon.min.js\' data-cf-beacon=\'{"token": "999d231dasda123kllklkdasc2"}\'></script>' ) .' </code>
+	<details><summary class="example">Example Snippet</summary>
+	<code class="details-inner">'. htmlentities( '<script defer src=\'https://static.cloudflareinsights.com/beacon.min.js\' data-cf-beacon=\'{"token": "999d231dasda123kllklkdasc2"}\'></script>' ) .' </code>
 	</details>
 	</li>
 	<li>The plugin uses the value <b>999d231dasda123kllklkdasc2</b> from the example above</li>
 	<li>Paste the token into the field.</li>
 	</ol>
 	
-	<h3>More about Cloudflare Web Analytics</h3>
+	<h3>Questions about Cloudflare Web Analytics?</h3>
 	
-	<p><a href="https://developers.cloudflare.com/analytics/web-analytics/" target="blank">Read the documentation on Cloudflare\'s site</a></p></details>';
+	<p>Check out <a href="https://developers.cloudflare.com/analytics/web-analytics/" target="blank">the documentation on Cloudflare\'s site</a>.</p></details>';
 }
 
 /**
@@ -149,7 +161,7 @@ function cf_web_analytics_setting_token() {
 
 	$token = cf_web_analytics_get_token();
 
-	echo "<input id='token' name='cf_web_analytics_options[token]' pattern='[a-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "' placeholder='ex: absd312dcdd312dasdas13' />";
+	echo "<input id='token' name='cf_web_analytics_options[token]' minlength='8' pattern='[a-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "' placeholder='ex: absd312dcdd312dasdas13' />";
 
 }
 
