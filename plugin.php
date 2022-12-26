@@ -48,14 +48,15 @@ add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
  */
 function cf_web_analytics_add_settings_menu() {
 
-	add_options_page(
-		'Cloudflare Web Analytics Settings',
-		'Cloudflare Web Analytics',
-		'manage_options',
-		'cf_web_analytics',
-		'cf_web_analytics_option_page'
-	);
-
+	if ( current_user_can( 'manage_options' ) ) {
+		add_options_page(
+			'Cloudflare Web Analytics Settings',
+			'Cloudflare Web Analytics',
+			'manage_options',
+			'cf_web_analytics',
+			'cf_web_analytics_option_page'
+		);
+	}
 }
 
 /**
