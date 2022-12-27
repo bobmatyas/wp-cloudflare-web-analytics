@@ -4,9 +4,17 @@
 	padding: 20px;
 }
 
+body.settings_page_cf_web_analytics .notice {
+	margin: 10px 12px 0 0;
+}
+
 @media screen and (min-width: 782px) {
 	.cfwa-container { 
 		margin-right: 24px;
+	}
+
+	body.settings_page_cf_web_analytics .notice {
+		margin: 5px 23px 2px 0;
 	}
 }
 

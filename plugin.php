@@ -8,7 +8,7 @@
  * @wordpress-plugin
  * Plugin Name:       Cloudflare Web Analytics
  * Plugin URI:        https://www.bobmatyas.com
- * Description:       Easily add Cloudflare Web Analytics to WordPress
+ * Description:       Adds Cloudflare Web Analytics JavaScript to WordPress.
  * Version:           1.0.0
  * Requires at least: 5.3
  * Requires PHP:      5.6
@@ -17,7 +17,6 @@
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       cf-web-analytics
- * Domain Path:       /public/lang
  */
 
 /*
@@ -48,15 +47,14 @@ add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
  */
 function cf_web_analytics_add_settings_menu() {
 
-	if ( current_user_can( 'manage_options' ) ) {
-		add_options_page(
-			'Cloudflare Web Analytics Settings',
-			'Cloudflare Web Analytics',
-			'manage_options',
-			'cf_web_analytics',
-			'cf_web_analytics_option_page'
-		);
-	}
+	add_options_page(
+		'Cloudflare Web Analytics Settings',
+		'Cloudflare Web Analytics',
+		'manage_options',
+		'cf_web_analytics',
+		'cf_web_analytics_option_page'
+	);
+
 }
 
 /**
@@ -68,8 +66,10 @@ function cf_web_analytics_option_page() {
 	?>
 	<div class="cfwa-container">
 		<h2>Cloudflare Web Analytics</h2>
+
 		<form action="options.php" method="post">
 			<?php
+			wp_nonce_field( 'cf_web_analytics_nonce_action', 'cf_web_analytics_nonce_token' );
 			settings_fields( 'cf_web_analytics_options' );
 			do_settings_sections( 'cf_web_analytics' );
 			submit_button( 'Save', 'primary' );
@@ -129,6 +129,7 @@ function cf_web_analytics_admin_styles() {
  *
  * @return void
  */
+// phpcs:disable
 function cf_web_analytics_section_text() {
 
 	echo '<details><summary>No token? View instructions</a></summary>
@@ -152,7 +153,7 @@ function cf_web_analytics_section_text() {
 	
 	<p>Check out <a href="https://developers.cloudflare.com/analytics/web-analytics/" target="blank">the documentation on Cloudflare\'s site</a>.</p></details>';
 }
-
+// phpcs:enable
 /**
  * Adds input box for Cloudflare token
  *
@@ -162,13 +163,13 @@ function cf_web_analytics_setting_token() {
 
 	$token = cf_web_analytics_get_token();
 
-	echo "<input id='token' name='cf_web_analytics_options[token]' minlength='8' pattern='[a-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "' placeholder='ex: absd312dcdd312dasdas13' />";
+	echo "<input id='token' name='cf_web_analytics_options[token]' minlength='8' pattern='[\Sa-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "' placeholder='ex: absd312dcdd312dasdas13' title='absd312dcdd312dasdas13' />";
 
 }
 
 
 /**
- * Check user-inputted token
+ * Check user-inputed token
  *
  * Checks token and makes sure it is valid.
  *
@@ -177,29 +178,39 @@ function cf_web_analytics_setting_token() {
  */
 function cf_web_analytics_validate_options( $input ) {
 
-	$valid          = array();
-	$valid['token'] = preg_replace(
-		'/[^A-Za-z0-9]/',
-		'',
-		$input['token']
-	);
+	if ( ! empty( $_POST ) && check_admin_referer( 'cf_web_analytics_nonce_action', 'cf_web_analytics_nonce_token' ) ) {
 
-	if ( $valid['token'] !== $input['token'] ) {
-
-		add_settings_error(
-			'cf_web_analytics_text_string',
-			'cf_web_analytics_texterror',
-			'Incorrect value entered. Token should be only letters and numbers.',
-			'error'
+		$valid          = array();
+		$valid['token'] = preg_replace(
+			'/[^A-Za-z0-9]/',
+			'',
+			$input['token']
 		);
 
-	}
+		if ( $valid['token'] !== $input['token'] || '' === $input['token'] ) {
 
-	$valid['token'] = sanitize_text_field( $input['token'] );
+			if ( '' === $input['token'] ) {
+				$error_msg = 'Token must not be empty.';
+			} else {
+				$error_msg = 'Incorrect value entered. Token should be only letters and numbers.';
+			}
+
+			add_settings_error(
+				'cf_web_analytics_text_string',
+				'cf_web_analytics_texterror',
+				$error_msg,
+				'error'
+			);
+		}
+
+		// TODO: This may need to be moved.
+		$valid['token'] = sanitize_text_field( $input['token'] );
+	}
 
 	return $valid;
 
 }
+
 
 /**
  * Gets token from database and returns it.
@@ -258,7 +269,8 @@ function cf_web_analytics_add_attributes( $tag, $handle, $src ) {
 	$token = cf_web_analytics_get_token();
 
 	if ( 'cf-web-analytics' === $handle ) {
-		$tag = "<script defer src='" . esc_url( $src ) . "'  data-cf-beacon='{\"token\": \"". $token ."\"}'></script>";
+		// phpcs:ignore
+		$tag = "<script defer src='" . esc_url( $src ) . "'  data-cf-beacon='{\"token\": \"" . $token . "\"}'></script>";
 	}
 
 	return $tag;
