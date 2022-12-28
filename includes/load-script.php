@@ -2,7 +2,7 @@
 /**
  * Controls display of Cloudflare Web Analytics script.
  *
- * @package "Cloudflare Web Analytics"
+ * @package "Helper for Cloudflare Web Analytics"
  */
 
 /**
