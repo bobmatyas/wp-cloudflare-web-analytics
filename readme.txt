@@ -4,8 +4,8 @@ Author:            Bob Matyas
 Author URI:		   https://www.bobmatyas.com
 Tags:              analytics, cloudflare, privacy, statistics, stats
 Requires at Least: 5.0
-Tested up to:      6.1
-Stable tag:        1.0.0
+Tested up to:      6.5.2
+Stable tag:        1.0.1
 Requires PHP:      5.6
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -30,6 +30,9 @@ Learn more on [their marketing page](https://www.cloudflare.com/web-analytics/) 
 1. Navigate to "Settings > Helper for Cloudflare Web Analytics" and add your site's token.
 
 == Changelog ==
+
+= 1.0.1 =
+* Initial release
 
 = 1.0 =
 * Initial release

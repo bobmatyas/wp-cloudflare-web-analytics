@@ -8,7 +8,7 @@
  * @wordpress-plugin
  * Plugin Name:       Helper for Cloudflare Web Analytics
  * Description:       Adds Cloudflare Web Analytics JavaScript to WordPress.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.3
  * Requires PHP:      5.6
  * Author:            Bob Matyas
