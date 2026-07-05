@@ -37,5 +37,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require __DIR__ . '/includes/settings.php';
 require __DIR__ . '/includes/load-script.php';
