@@ -33,6 +33,7 @@ Learn more on [their marketing page](https://www.cloudflare.com/web-analytics/) 
 = 1.0.3 =
 - Confirm WordPress v7.0 compatibility
 - Require WordPress v6.9 or later
+- Fix code quality issues identified by Plugin Check
 
 = 1.0.2 =
 - Confirm WordPress v6.9 compatibility
