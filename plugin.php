@@ -3,20 +3,20 @@
  * This plugin adds support for Cloudflare Web Analytics in WordPress.
  *
  * @package "Helper for Cloudflare Web Analytics"
- * @version 1.0.0
+ * @version 1.0.3
  *
  * @wordpress-plugin
  * Plugin Name:       Helper for Cloudflare Web Analytics
  * Description:       Adds Cloudflare Web Analytics JavaScript to WordPress.
- * Version:           1.0.2
- * Requires at least: 6.8
+ * Version:           1.0.3
+ * Requires at least: 6.9
  * Requires PHP:      8.2
- * Tested up to:      6.9
+ * Tested up to:      7.0
  * Author:            Bob Matyas
  * Author URI:        https://www.bobmatyas.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       cf-web-analytics
+ * Text Domain:       helper-for-cloudflare-web-analytics
  */
 
 /*
@@ -36,6 +36,10 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 require __DIR__ . '/includes/settings.php';
 require __DIR__ . '/includes/load-script.php';

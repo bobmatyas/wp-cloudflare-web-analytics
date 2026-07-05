@@ -5,6 +5,10 @@
  * @package "Helper for Cloudflare Web Analytics"
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
 
 /**

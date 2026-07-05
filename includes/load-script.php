@@ -5,6 +5,10 @@
  * @package "Helper for Cloudflare Web Analytics"
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Loads Cloudflare Web Analytics script
  *
