@@ -19,8 +19,8 @@ add_action( 'admin_menu', 'cf_web_analytics_add_settings_menu' );
 function cf_web_analytics_add_settings_menu() {
 
 	add_options_page(
-		'Helper for Cloudflare Web Analytics Settings',
-		'Helper for Cloudflare Web Analytics',
+		__( 'Helper for Cloudflare Web Analytics Settings', 'helper-for-cloudflare-web-analytics' ),
+		__( 'Helper for Cloudflare Web Analytics', 'helper-for-cloudflare-web-analytics' ),
 		'manage_options',
 		'cf_web_analytics',
 		'cf_web_analytics_option_page'
@@ -36,14 +36,14 @@ function cf_web_analytics_add_settings_menu() {
 function cf_web_analytics_option_page() {
 	?>
 	<div class="cfwa-container">
-		<h2>Helper for Cloudflare Web Analytics</h2>
+		<h2><?php esc_html_e( 'Helper for Cloudflare Web Analytics', 'helper-for-cloudflare-web-analytics' ); ?></h2>
 
 		<form action="options.php" method="post">
 			<?php
 			wp_nonce_field( 'cf_web_analytics_nonce_action', 'cf_web_analytics_nonce_token' );
 			settings_fields( 'cf_web_analytics_options' );
 			do_settings_sections( 'cf_web_analytics' );
-			submit_button( 'Save', 'primary' );
+			submit_button( __( 'Save', 'helper-for-cloudflare-web-analytics' ) );
 			?>
 		</form>
 	</div>
@@ -69,14 +69,14 @@ function cf_web_analytics_admin_init() {
 
 	add_settings_section(
 		'cf_web_analytics_main',
-		'Enter your token Cloudflare Web Analytics token.',
+		__( 'Enter your token Cloudflare Web Analytics token.', 'helper-for-cloudflare-web-analytics' ),
 		'cf_web_analytics_section_text',
 		'cf_web_analytics'
 	);
 
 	add_settings_field(
 		'cf_web_analytics_token',
-		'Token',
+		__( 'Token', 'helper-for-cloudflare-web-analytics' ),
 		'cf_web_analytics_setting_token',
 		'cf_web_analytics',
 		'cf_web_analytics_main'
@@ -100,31 +100,90 @@ function cf_web_analytics_admin_styles() {
  *
  * @return void
  */
-// phpcs:disable
 function cf_web_analytics_section_text() {
+	$allowed_inline_tags = array(
+		'a'    => array(
+			'href'   => array(),
+			'target' => array(),
+		),
+		'b'    => array(),
+		'u'    => array(),
+		'code' => array(),
+	);
 
-	echo '<details><summary>No token? View instructions</a></summary>
+	$example_snippet = htmlentities(
+		'<' . 'script defer src=\'https://static.cloudflareinsights.com/beacon.min.js\' data-cf-beacon=\'{"token": "999d231dasda123kllklkdasc2"}\'></' . 'script>'
+	);
+	?>
+	<details>
+		<summary><?php esc_html_e( 'No token? View instructions', 'helper-for-cloudflare-web-analytics' ); ?></summary>
 
-	<h3>How to Configure</h3>
-	
-	<ol>
-	<li><a href="https://dash.cloudflare.com/sign-up/web-analytics" target="blank">Sign-up for a Cloudflare account</a> or <a href="https://dash.cloudflare.com/login" target="blank">log in to your existing account.</a></li>
-	<li>Once logged in, navigate to <b>"Analytics > Web Analytics"</b></li>
-	<li>Add a new website or view the JS snippet for an existing site</li>
-	<li>In the snippet code, copy the <code>token</code> value (i.e. <code>"token": "<b><u>999d231dasda123kllklkdasc2</u></b>"</code>)
-	<details><summary class="example">Example Snippet</summary>
-	<code class="details-inner">'. htmlentities( '<script defer src=\'https://static.cloudflareinsights.com/beacon.min.js\' data-cf-beacon=\'{"token": "999d231dasda123kllklkdasc2"}\'></script>' ) .' </code>
+		<h3><?php esc_html_e( 'How to Configure', 'helper-for-cloudflare-web-analytics' ); ?></h3>
+
+		<ol>
+			<li>
+				<?php
+				echo wp_kses(
+					sprintf(
+						/* translators: 1: URL to Cloudflare sign-up, 2: URL to Cloudflare login */
+						__( '<a href="%1$s" target="_blank">Sign-up for a Cloudflare account</a> or <a href="%2$s" target="_blank">log in to your existing account.</a>', 'helper-for-cloudflare-web-analytics' ),
+						esc_url( 'https://dash.cloudflare.com/sign-up/web-analytics' ),
+						esc_url( 'https://dash.cloudflare.com/login' )
+					),
+					$allowed_inline_tags
+				);
+				?>
+			</li>
+			<li>
+				<?php
+				echo wp_kses(
+					__( 'Once logged in, navigate to <b>"Analytics &gt; Web Analytics"</b>', 'helper-for-cloudflare-web-analytics' ),
+					array( 'b' => array() )
+				);
+				?>
+			</li>
+			<li><?php esc_html_e( 'Add a new website or view the JS snippet for an existing site', 'helper-for-cloudflare-web-analytics' ); ?></li>
+			<li>
+				<?php
+				echo wp_kses(
+					__( 'In the snippet code, copy the <code>token</code> value (i.e. <code>"token": "<b><u>999d231dasda123kllklkdasc2</u></b>"</code>)', 'helper-for-cloudflare-web-analytics' ),
+					$allowed_inline_tags
+				);
+				?>
+				<details>
+					<summary class="example"><?php esc_html_e( 'Example Snippet', 'helper-for-cloudflare-web-analytics' ); ?></summary>
+					<code class="details-inner"><?php echo esc_html( $example_snippet ); ?></code>
+				</details>
+			</li>
+			<li>
+				<?php
+				echo wp_kses(
+					__( 'The plugin uses the value <b>999d231dasda123kllklkdasc2</b> from the example above', 'helper-for-cloudflare-web-analytics' ),
+					array( 'b' => array() )
+				);
+				?>
+			</li>
+			<li><?php esc_html_e( 'Paste the token into the field.', 'helper-for-cloudflare-web-analytics' ); ?></li>
+		</ol>
+
+		<h3><?php esc_html_e( 'Questions about Cloudflare Web Analytics?', 'helper-for-cloudflare-web-analytics' ); ?></h3>
+
+		<p>
+			<?php
+			echo wp_kses(
+				sprintf(
+					/* translators: %s: URL to Cloudflare documentation */
+					__( 'Check out <a href="%s" target="_blank">the documentation on Cloudflare\'s site</a>.', 'helper-for-cloudflare-web-analytics' ),
+					esc_url( 'https://developers.cloudflare.com/analytics/web-analytics/' )
+				),
+				$allowed_inline_tags
+			);
+			?>
+		</p>
 	</details>
-	</li>
-	<li>The plugin uses the value <b>999d231dasda123kllklkdasc2</b> from the example above</li>
-	<li>Paste the token into the field.</li>
-	</ol>
-	
-	<h3>Questions about Cloudflare Web Analytics?</h3>
-	
-	<p>Check out <a href="https://developers.cloudflare.com/analytics/web-analytics/" target="blank">the documentation on Cloudflare\'s site</a>.</p></details>';
+	<?php
 }
-// phpcs:enable
+
 /**
  * Adds input box for Cloudflare token
  *
@@ -134,7 +193,12 @@ function cf_web_analytics_setting_token() {
 
 	$token = cf_web_analytics_get_token();
 
-	echo "<input id='token' name='cf_web_analytics_options[token]' minlength='8' pattern='[\Sa-zA-Z0-9-]+' type='text' value='" . esc_attr( $token ) . "' placeholder='ex: absd312dcdd312dasdas13' title='absd312dcdd312dasdas13' />";
+	printf(
+		"<input id='token' name='cf_web_analytics_options[token]' minlength='8' pattern='[\Sa-zA-Z0-9-]+' type='text' value='%s' placeholder='%s' title='%s' />",
+		esc_attr( $token ),
+		esc_attr__( 'ex: absd312dcdd312dasdas13', 'helper-for-cloudflare-web-analytics' ),
+		esc_attr__( 'absd312dcdd312dasdas13', 'helper-for-cloudflare-web-analytics' )
+	);
 
 }
 
@@ -161,9 +225,9 @@ function cf_web_analytics_validate_options( $input ) {
 		if ( $valid['token'] !== $input['token'] || '' === $input['token'] ) {
 
 			if ( '' === $input['token'] ) {
-				$error_msg = 'Token must not be empty.';
+				$error_msg = __( 'Token must not be empty.', 'helper-for-cloudflare-web-analytics' );
 			} else {
-				$error_msg = 'Incorrect value entered. Token should be only letters and numbers.';
+				$error_msg = __( 'Incorrect value entered. Token should be only letters and numbers.', 'helper-for-cloudflare-web-analytics' );
 			}
 
 			add_settings_error(
@@ -196,4 +260,3 @@ function cf_web_analytics_get_token() {
 	return $token;
 
 }
-?>
