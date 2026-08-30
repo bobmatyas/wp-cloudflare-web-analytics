@@ -255,8 +255,11 @@ function cf_web_analytics_validate_options( $input ) {
 function cf_web_analytics_get_token() {
 
 	$options = get_option( 'cf_web_analytics_options' );
-	$token   = $options['token'];
 
-	return $token;
+	if ( ! is_array( $options ) || ! isset( $options['token'] ) ) {
+		return '';
+	}
+
+	return $options['token'];
 
 }
