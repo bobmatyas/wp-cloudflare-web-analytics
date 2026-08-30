@@ -3,9 +3,9 @@ Contributors:      lastsplash
 Author:            Bob Matyas
 Author URI:		   https://www.bobmatyas.com
 Tags:              analytics, cloudflare, privacy, statistics, stats
-Requires at Least: 6.9
+Requires at Least: 7.0
 Tested up to:      7.1
-Stable tag:        1.0.4
+Stable tag:        1.0.5
 Requires PHP:      8.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
